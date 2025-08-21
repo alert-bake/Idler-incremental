@@ -1,222 +1,211 @@
-// ===== GAME STATE =====
+// ===============================
+// Idler Incremental v1.2 - Liquidated Requiem
+// ===============================
 let game = {
-  currency: 0,
-  producers: [0, 0, 0], // Worker, Miner, Factory
-  upgrades: { doubler: 0, formulaBoost: false },
-  prestige: { points: 0, bestGain: 0 },
-  modifiers: { active: false, buffs: [], debuffs: [] },
-  playtime: 0,
-  darkMode: false
+    currency: 0,
+    producers: [0, 0, 0, 0, 0],
+    prestige: {
+        points: 0,
+        bestGain: 0,
+    },
+    upgrades: {
+        formulaBoost: false,
+        doubler: 0,
+    },
+    playtime: 0,
 };
 
-// ===== COSTS =====
-function producerCost(i){
-  return Math.floor(10 * Math.pow(1.15, game.producers[i]));
-}
-
-// ===== RENDER =====
-function updateUI(){
-  // currency + prestige
-  const c = document.getElementById("currencyDisplay");
-  const p = document.getElementById("pcDisplay");
-  if(c) c.textContent = "Currency: " + format(game.currency);
-  if(p) p.textContent = "Prestige Points: " + format(game.prestige.points);
-
-  // producers
-  const prodRoot = document.getElementById("producers");
-  if(prodRoot){
-    let html = "";
-    game.producers.forEach((count,i)=>{
-      html += `<div class="producer">
-        Producer #${i+1}: ${count}
-        <button onclick="buyProducer(${i})">Buy (${producerCost(i)})</button>
-      </div>`;
-    });
-    prodRoot.innerHTML = html;
-  }
-
-  // upgrades
-  const upgRoot = document.getElementById("upgradesList");
-  if(upgRoot){
-    upgRoot.innerHTML = `
-      <div class="upgrade">
-        <button onclick="buyDoubler()" ${game.upgrades.doubler >= 3 ? "disabled" : ""}>
-          Buy Doubler (${10 * (5 ** game.upgrades.doubler)})
-        </button>
-        <p>Owned: ${game.upgrades.doubler}</p>
-      </div>
-    `;
-  }
-
-  // prestige info
-  const pi = document.getElementById("prestigeInfo");
-  if(pi) pi.textContent = `Best Gain: ${format(game.prestige.bestGain)}`;
-
-  // stats
-  const pt = document.getElementById("playtimeDisplay");
-  const bp = document.getElementById("bestPrestige");
-  if(pt) pt.textContent = "Playtime: " + formatTime(game.playtime);
-  if(bp) bp.textContent = "Best Prestige Gain: " + format(game.prestige.bestGain);
-
-  // debug
-  const td = document.getElementById("tickDisplay");
-  if(td) td.textContent = "Tickspeed: " + tickRate + "ms";
-}
-
-// ===== TABS =====
-function showTab(id){
-  // switch content
-  document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
-  const tab = document.getElementById(id);
-  if(tab) tab.classList.add('active');
-
-  // highlight tab button
-  document.querySelectorAll('#tabs button').forEach(btn=>{
-    const on = btn.getAttribute('onclick') || "";
-    btn.classList.toggle('active', on.includes(`'${id}'`));
-  });
-
-  // if the tab has subtabs, ensure the first is active
-  if(id === "settingsTab"){
-    const firstBtn = document.querySelector('#settingsSubtabs .subtab-btn');
-    if(firstBtn && !firstBtn.classList.contains('active')){
-      firstBtn.click();
-    }
-  }
-}
-
-function showSubtab(subtabId, btn){
-  const container = document.getElementById("settingsTab");
-  if(!container) return;
-
-  container.querySelectorAll('.subtab').forEach(s=>s.classList.remove('active'));
-  const target = document.getElementById(subtabId);
-  if(target) target.classList.add('active');
-
-  const bar = document.getElementById('settingsSubtabs');
-  if(bar){
-    bar.querySelectorAll('.subtab-btn').forEach(b=>b.classList.remove('active'));
-    if(btn) btn.classList.add('active');
-  }
-}
-
-// ===== GAME LOGIC =====
-function gainCurrency(){
-  let gain = 1 * (2 ** game.upgrades.doubler);
-  if (game.modifiers.buffs.includes("Stabilized")) gain *= 1.3;
-  if (game.modifiers.debuffs.includes("Destabilizer")) gain = Math.pow(gain, 0.7);
-  game.currency += gain;
-  updateUI();
-}
-
-function buyProducer(i){
-  const cost = producerCost(i);
-  if (game.currency >= cost){
-    game.currency -= cost;
-    game.producers[i]++;
-    updateUI();
-  }
-}
-
-function buyDoubler(){
-  const cost = 10 * (5 ** game.upgrades.doubler);
-  if (game.currency >= cost && game.upgrades.doubler < 3){
-    game.currency -= cost;
-    game.upgrades.doubler++;
-    updateUI();
-  }
-}
-
-function prestige(){
-  if (game.currency >= 200000){
-    let base = Math.pow(game.currency / 4, 0.9);
-    if (game.upgrades.formulaBoost) base = Math.pow(game.currency / 4, 0.9) / 1.5 / 1.5;
-    const gain = Math.floor(base / 4);
-    if (gain > 0){
-      game.currency = 0;
-      game.producers = [0,0,0];
-      game.upgrades.doubler = 0;
-      game.prestige.points += gain;
-      game.prestige.bestGain = Math.max(game.prestige.bestGain, gain);
-    }
-    updateUI();
-  }
-}
-
-// ===== DEBUG =====
-function debugTriple(){ game.currency *= 3; updateUI(); }
 let tickRate = 1000;
-function toggleTickspeed(){ tickRate = (tickRate === 1000 ? 1 : 1000); }
+let gameLoop;
 
-// ===== SAVE/LOAD =====
-function saveGame(){ localStorage.setItem("idlerIncrementalSave", JSON.stringify(game)); }
-function loadGame(){
-  let save = localStorage.getItem("idlerIncrementalSave");
-  if (save){
-    try{
-      const data = JSON.parse(save);
-      if (data && typeof data === "object") game = {...game, ...data};
-    }catch{}
-  }
-  updateUI();
-}
-function exportSave(){
-  navigator.clipboard.writeText(btoa(JSON.stringify(game)));
-  alert("Save copied!");
-}
-function importSave(){
-  let data = prompt("Paste save:");
-  try{
-    game = JSON.parse(atob(data));
-    updateUI(); saveGame();
-  }catch{ alert("Invalid save"); }
-}
-function hardReset(){
-  if(confirm("Reset?")){
-    localStorage.clear();
-    location.reload();
-  }
+// ===============================
+// Utility
+// ===============================
+function format(x) {
+    if (x >= 1e6) return x.toExponential(2);
+    return Math.floor(x);
 }
 
-// ===== HELPERS =====
-function format(n){ return (n >= 1e6) ? n.toExponential(2) : n.toLocaleString("en-US"); }
-function formatTime(sec){
-  sec = Math.floor(sec);
-  const m = Math.floor(sec/60), s = sec%60;
-  return `${m}m ${s}s`;
+function formatTime(sec) {
+    let h = Math.floor(sec / 3600);
+    let m = Math.floor((sec % 3600) / 60);
+    let s = Math.floor(sec % 60);
+    return `${h}h ${m}m ${s}s`;
 }
 
-// ===== LOOP =====
-function tick(){
-  game.playtime++;
-  for (let i=0;i<game.producers.length;i++){
-    game.currency += game.producers[i];
-  }
-  updateUI();
-  setTimeout(tick, tickRate);
+// ===============================
+// Core
+// ===============================
+function gainCurrency() {
+    let gain = 1 + game.upgrades.doubler;
+    game.currency += gain;
+    updateUI();
 }
 
-// ===== INIT =====
-window.onload = () => { loadGame(); updateUI(); tick(); };
-
-// ===== GLOBAL EXPORTS (for inline onclick) =====
-window.showTab = showTab;
-window.showSubtab = showSubtab;
-window.gainCurrency = gainCurrency;
-window.buyProducer = buyProducer;
-window.buyDoubler = buyDoubler;
-window.prestige = prestige;
-window.debugTriple = debugTriple;
-window.toggleTickspeed = toggleTickspeed;
-window.toggleDarkMode = toggleDarkMode;
-window.saveGame = saveGame;
-window.loadGame = loadGame;
-window.exportSave = exportSave;
-window.importSave = importSave;
-window.hardReset = hardReset;
-
-// ===== THEME TOGGLE =====
-function toggleDarkMode(){
-  game.darkMode = !game.darkMode;
-  document.body.classList.toggle("darkmode", game.darkMode);
+function buyProducer(id) {
+    let cost = Math.pow(10, id + 1) * (game.producers[id] + 1);
+    if (game.currency >= cost) {
+        game.currency -= cost;
+        game.producers[id]++;
+        updateUI();
+    }
 }
+
+function producerGain() {
+    for (let i = 0; i < game.producers.length; i++) {
+        game.currency += game.producers[i] * (i + 1);
+    }
+}
+
+// ===============================
+// Prestige
+// ===============================
+function prestigeMultiplier() {
+    let multRaw = (game.prestige.points / 256) * 3;
+    let mult = Math.round(multRaw);
+    if (mult < 1) mult = 1;
+    return Math.pow(mult, 0.8);
+}
+
+function prestige() {
+    if (game.currency >= 200000) {
+        let base = Math.pow(game.currency / 4, 0.9);
+        if (game.upgrades.formulaBoost) base /= (1.5 * 1.5);
+
+        let gain = Math.floor(base * prestigeMultiplier());
+
+        if (gain > 0) {
+            game.currency = 0;
+            game.producers = [0, 0, 0, 0, 0];
+            game.upgrades.doubler = 0;
+            game.prestige.points += gain;
+            game.prestige.bestGain = Math.max(game.prestige.bestGain, gain);
+        }
+        updateUI();
+    }
+}
+
+// ===============================
+// Dark Mode
+// ===============================
+function toggleDarkMode() {
+    document.body.classList.toggle("dark");
+}
+
+// ===============================
+// Debuggo
+// ===============================
+function debugTriple() {
+    game.currency *= 3;
+    updateUI();
+}
+
+function toggleTickspeed() {
+    if (tickRate === 1000) tickRate = 1;
+    else tickRate = 1000;
+    clearInterval(gameLoop);
+    gameLoop = setInterval(tick, tickRate);
+    updateUI();
+}
+
+// ===============================
+// Tabs
+// ===============================
+function showTab(tab) {
+    let tabs = document.querySelectorAll(".tab");
+    tabs.forEach(t => t.classList.remove("active"));
+    document.getElementById(tab).classList.add("active");
+}
+
+// ===============================
+// Save / Load
+// ===============================
+function saveGame() {
+    localStorage.setItem("idlerSave", JSON.stringify(game));
+}
+
+function loadGame() {
+    let save = localStorage.getItem("idlerSave");
+    if (save) {
+        game = JSON.parse(save);
+    }
+    updateUI();
+}
+
+function hardReset() {
+    if (confirm("Are you sure? This will delete all progress.")) {
+        game = {
+            currency: 0,
+            producers: [0, 0, 0, 0, 0],
+            prestige: {
+                points: 0,
+                bestGain: 0,
+            },
+            upgrades: {
+                formulaBoost: false,
+                doubler: 0,
+            },
+            playtime: 0,
+        };
+        updateUI();
+        saveGame();
+    }
+}
+
+function exportSave() {
+    let data = btoa(JSON.stringify(game));
+    prompt("Copy your save:", data);
+}
+
+function importSave() {
+    let data = prompt("Paste your save:");
+    if (data) {
+        try {
+            game = JSON.parse(atob(data));
+            updateUI();
+            saveGame();
+        } catch (e) {
+            alert("Invalid save!");
+        }
+    }
+}
+
+// ===============================
+// Tick
+// ===============================
+function tick() {
+    producerGain();
+    game.playtime++;
+    updateUI();
+}
+
+// ===============================
+// UI
+// ===============================
+function updateUI() {
+    document.getElementById("currencyDisplay").textContent = `Currency: ${format(game.currency)}`;
+    document.getElementById("pcDisplay").textContent = `Prestige Currency: ${format(game.prestige.points)}`;
+    document.getElementById("prestigeMultDisplay").textContent =
+        `Prestige Multiplier: ${format(prestigeMultiplier())}×`;
+    document.getElementById("debugInfo").innerHTML = `
+        <p>Tickspeed: ${tickRate}ms</p>
+        <p>Playtime: ${formatTime(game.playtime)}</p>
+        <p>Best Prestige Gain: ${format(game.prestige.bestGain)}</p>
+    `;
+}
+
+// ===============================
+// Info Toggle
+// ===============================
+function toggleMultInfo() {
+    let el = document.getElementById("multInfo");
+    el.style.display = (el.style.display === "block") ? "none" : "block";
+}
+
+// ===============================
+// Init
+// ===============================
+window.onload = () => {
+    loadGame();
+    gameLoop = setInterval(tick, tickRate);
+};
