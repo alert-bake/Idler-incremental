@@ -1,21 +1,48 @@
-// ==========================
-// Tickspeed.js
-// Tick system + debug speed
-// ==========================
+// =============================
+// tickspeed.js - Game Loop
+// =============================
 
-let tickSpeed = 1; // multiplier for debug/testing
-
-function tickGame() {
-    // Currency gain from producers
-    let totalGain = 0;
+function gameTick(diff) {
+    let production = 0;
     for (let p of game.producers) {
-        totalGain += p.amount * p.power;
+        production += p.amount * p.production;
     }
-    game.currency += totalGain * tickSpeed;
+
+    game.currency += production * diff;
+    game.stats.totalProduced += production * diff;
+
+    // bests
+    if (game.currency > game.stats.bestCurrency)
+        game.stats.bestCurrency = game.currency;
+    if (game.prestigeCurrency > game.stats.bestPrestige)
+        game.stats.bestPrestige = game.prestigeCurrency;
+
+    game.stats.playtime += diff;
+
+    render();
 }
 
-// Debug toggle
-function setTickSpeed(mult) {
-    tickSpeed = mult;
-    notify("Tick speed set to x" + mult);
+function mainLoop() {
+    let now = Date.now();
+    let diff = (now - game.lastTick) / 1000 * game.settings.tickspeed;
+    game.lastTick = now;
+    gameTick(diff);
 }
+
+// Offline progress with 15% decay every 10h → 40% cap
+function doOfflineProgress() {
+    let now = Date.now();
+    let diff = (now - game.lastTick) / 1000;
+    if (diff < 10) return;
+
+    let hours = diff / 3600;
+    let decaySteps = Math.floor(hours / 10);
+    let factor = Math.pow(0.85, decaySteps);
+    if (factor < 0.4) factor = 0.4;
+
+    let effective = diff * factor;
+    gameTick(effective);
+    game.lastTick = now;
+}
+
+setInterval(mainLoop, 100);
