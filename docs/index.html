@@ -7,77 +7,47 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <div id="topBar">Idler Incremental v1.2</div>
+
+  <!-- Top Bar -->
+  <div id="topBar">Idler Incremental v1.2 "Liquidated Requiem"</div>
 
   <!-- Currency -->
-  <div id="currencyDisplay">Currency: 0</div>
-  <div id="pcDisplay">Prestige Currency: 0</div>
+  <div id="currency-display">Currency: 0</div>
+  <div id="pc-display">Prestigious Currency: 0</div>
 
   <!-- Tabs -->
   <div id="tabs">
-    <button onclick="showTab('main')">Main</button>
+    <button onclick="showTab('producers')">Producers</button>
     <button onclick="showTab('upgrades')">Upgrades</button>
     <button onclick="showTab('prestige')">Prestige</button>
     <button onclick="showTab('achievements')">Achievements</button>
     <button onclick="showTab('stats')">Stats</button>
     <button onclick="showTab('settings')">Settings</button>
-    <button onclick="showTab('debuggo')">Debuggo</button>
   </div>
 
   <!-- Tab Content -->
-  <div id="tab-content">
-    <div id="main" class="tab active">
-      <button onclick="gainCurrency()">Click me!</button>
-      <div id="producers"></div>
-    </div>
-
-    <div id="upgrades" class="tab">
-      <h3>Upgrades</h3>
-      <div id="upgrades-list"></div>
-    </div>
-
-    <div id="prestige" class="tab">
-      <h3>Prestige</h3>
-      <button onclick="prestige()">Prestige Reset</button>
-      <p id="prestigeMultDisplay">Prestige Multiplier: 1×</p>
-      <button onclick="toggleMultInfo()">?</button>
-      <div id="multInfo">
-        Prestige Multiplier boosts the <b>amount of Prestiges you gain</b> when resetting.<br>
-        It scales with your total Prestige Currency (PC), not directly with currency.
-      </div>
-    </div>
-
-    <div id="achievements" class="tab">
-      <h3>Achievements</h3>
-      <div id="achievements-list"></div>
-    </div>
-
-    <div id="stats" class="tab">
-      <h3>Stats</h3>
-      <p id="playtimeDisplay">Playtime: 0</p>
-      <p id="bestPrestige">Best Prestige Gain: 0</p>
-    </div>
-
-    <div id="settings" class="tab">
-      <h3>Settings</h3>
-      <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
-      <button onclick="hardReset()">Hard Reset</button><br>
-      <button onclick="saveGame()">Manual Save</button>
-      <button onclick="loadGame()">Load Save</button><br>
-      <button onclick="exportSave()">Export</button>
-      <button onclick="importSave()">Import</button>
-    </div>
-
-    <div id="debuggo" class="tab">
-      <h3>Debuggo</h3>
-      <button onclick="debugTriple()">Triple Currency</button>
-      <button onclick="toggleTickspeed()">Toggle 1ms Tick</button>
-      <div id="debugInfo"></div>
-    </div>
+  <div id="producers" class="tab">Producer content here...</div>
+  <div id="upgrades" class="tab">Upgrade content here...</div>
+  <div id="prestige" class="tab">Prestige content here...</div>
+  <div id="achievements" class="tab">Achievements content here...</div>
+  <div id="stats" class="tab">Stats content here...</div>
+  <div id="settings" class="tab">
+    Settings here...
+    <div id="debuggo" class="subtab">Debuggo subtab...</div>
   </div>
 
+  <!-- Notification -->
   <div id="notification"></div>
 
-  <script src="js/script.js"></script>
+  <!-- Scripts (order matters!) -->
+  <script src="js/logic.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/formula.js"></script>
+  <script src="js/tickspeed.js"></script>
+  <script>
+    // Start game after scripts load
+    initGame();
+    showTab('producers'); // default tab
+  </script>
 </body>
-  </html>
+</html>
