@@ -17,38 +17,47 @@ function producerCost(i) {
 
 // ====== UI RENDERING ======
 function updateUI() {
-  document.getElementById("app").innerHTML = `
-    <h1>Idler Incremental v1.0</h1>
-    <p>Currency: ${format(game.currency)}</p>
-    <p>Producers: ${game.producers.map((p,i)=>`#${i+1}:${p}`).join(", ")}</p>
-    <p>Prestige Points: ${format(game.prestige.points)}</p>
-    <div>
-      <button onclick="gainCurrency()">Click</button>
-      <button onclick="buyProducer(0)">Buy Worker (${producerCost(0)})</button>
-      <button onclick="buyDoubler()">Buy Doubler (${10 * (5 ** game.upgrades.doubler)})</button>
-    </div>
-    <div>
-      <button onclick="prestige()">Prestige</button>
-    </div>
-    <hr>
-    <div>
-      <h3>Settings</h3>
-      <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
-      <button onclick="hardReset()">Hard Reset</button><br>
-      <button onclick="saveGame()">Manual Save</button>
-      <button onclick="loadGame()">Load Save</button><br>
-      <button onclick="exportSave()">Export</button>
-      <button onclick="importSave()">Import</button>
-    </div>
-    <hr>
-    <div>
-      <h3>Debuggo</h3>
-      <button onclick="debugTriple()">Triple Currency</button>
-      <button onclick="toggleTickspeed()">Toggle 1ms Tick</button>
-      <p>Tickspeed: ${tickRate}ms</p>
-      <p>Playtime: ${formatTime(game.playtime)}</p>
+  // Currency
+  document.getElementById("currencyDisplay").textContent = "Currency: " + format(game.currency);
+  document.getElementById("pc-display").textContent = "Prestige Points: " + format(game.prestige.points);
+
+  // Producers
+  let prodHTML = "";
+  game.producers.forEach((p, i) => {
+    prodHTML += `<div class="producer">
+      Producer #${i+1}: ${p}
+      <button onclick="buyProducer(${i})">Buy (${producerCost(i)})</button>
+    </div>`;
+  });
+  document.getElementById("producers").innerHTML = prodHTML;
+
+  // Upgrades
+  let upgHTML = `
+    <div class="upgrade">
+      <button onclick="buyDoubler()" ${game.upgrades.doubler >= 3 ? "disabled" : ""}>
+        Buy Doubler (${10 * (5 ** game.upgrades.doubler)})
+      </button>
+      <p>Owned: ${game.upgrades.doubler}</p>
     </div>
   `;
+  document.getElementById("upgrades-list").innerHTML = upgHTML;
+
+  // Prestige info
+  document.getElementById("prestige-info").textContent =
+    `Best Gain: ${game.prestige.bestGain}`;
+
+  // Stats
+  document.getElementById("playtimeDisplay").textContent = "Playtime: " + formatTime(game.playtime);
+  document.getElementById("bestPrestige").textContent = "Best Prestige Gain: " + format(game.prestige.bestGain);
+
+  // Debug
+  document.getElementById("tickDisplay").textContent = "Tickspeed: " + tickRate + "ms";
+}
+
+// ====== TAB SWITCHING ======
+function showTab(id) {
+  document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
 }
 
 // ====== GAME LOGIC ======
