@@ -1,55 +1,72 @@
-// =============================
-// logic.js - Game State & Core
-// =============================
-
-// Global game object
+// =========================
+// GAME STATE
+// =========================
 let game = {
     currency: 0,
-    prestigeCurrency: 0,
-    totalPrestige: 0,
+    prestigePoints: 0,
+    bestPrestigeGain: 0,
+    playtime: 0,
     producers: [
-        { name: "Worker", baseCost: 10, costMult: 1.15, amount: 0, production: 1 },
-        { name: "Factory", baseCost: 1e3, costMult: 1.18, amount: 0, production: 50 },
-        { name: "Robot", baseCost: 1e5, costMult: 1.2, amount: 0, production: 5000 },
-        { name: "Lab", baseCost: 1e7, costMult: 1.25, amount: 0, production: 1e5 },
-        { name: "AI Core", baseCost: 1e9, costMult: 1.3, amount: 0, production: 5e6 }
+        { name: "Worker", amount: 0, baseCost: 10, cost: 10, cps: 0.1 },
+        { name: "Factory", amount: 0, baseCost: 100, cost: 100, cps: 2 },
+        { name: "Robot", amount: 0, baseCost: 1000, cost: 1000, cps: 15 }
     ],
-    upgrades: [],
     achievements: [],
-    milestones: [],
-    stats: {
-        playtime: 0,
-        bestCurrency: 0,
-        bestPrestige: 0,
-        totalProduced: 0
-    },
-    settings: {
-        tickspeed: 1,
-        offlineProgress: true
-    },
-    lastTick: Date.now()
+    prestigeUpgrades: [],
+    tickspeed: 1000,
+    debugFast: false,
 };
 
-// Buy producer
+// =========================
+// MAIN GAME LOOP
+// =========================
+function gameLoop(diff) {
+    // Currency gain
+    let gain = 0;
+    game.producers.forEach(p => {
+        gain += p.amount * p.cps * (diff / 1000);
+    });
+    game.currency += gain;
+
+    // Playtime
+    game.playtime += diff / 1000;
+
+    // Update rendering
+    renderCurrency();
+    renderProducers();
+    renderStats();
+    renderAchievements();
+    renderPrestige();
+}
+
+// =========================
+// BUTTON ACTIONS
+// =========================
+function gainCurrency() {
+    game.currency++;
+    renderCurrency();
+}
+
 function buyProducer(i) {
     let p = game.producers[i];
-    let cost = p.baseCost * Math.pow(p.costMult, p.amount);
-    if (game.currency >= cost) {
-        game.currency -= cost;
+    if (game.currency >= p.cost) {
+        game.currency -= p.cost;
         p.amount++;
-        render();
+        p.cost = Math.floor(p.baseCost * Math.pow(1.15, p.amount));
+        renderProducers();
+        renderCurrency();
     }
 }
 
-// Prestige reset
-function doPrestige() {
-    let gain = getPrestigeGain();
+function prestige() {
+    let gain = calculatePrestigeGain();
     if (gain > 0) {
-        game.prestigeCurrency += gain;
-        game.totalPrestige += gain;
-        // reset everything but prestige
         game.currency = 0;
-        for (let p of game.producers) p.amount = 0;
-        render();
+        game.producers.forEach(p => { p.amount = 0; p.cost = p.baseCost; });
+        game.prestigePoints += gain;
+        if (gain > game.bestPrestigeGain) game.bestPrestigeGain = gain;
     }
+    renderPrestige();
+    renderCurrency();
+    renderProducers();
 }
