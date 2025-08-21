@@ -3,38 +3,76 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Idler Incremental v1.0</title>
+  <title>Idler Incremental v1.1</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <div id="app">
-    <h1>Idler Incremental</h1>
-    <div id="currency-display">Currency: 0</div>
-    <div id="pc-display" style="display:none;">Prestigious Currency: 0</div>
+  <div id="topBar">Idler Incremental v1.1</div>
 
-    <div id="tabs">
-      <button onclick="showTab('main')">Main</button>
-      <button onclick="showTab('upgrades')">Upgrades</button>
-      <button onclick="showTab('prestige')" id="prestige-tab" style="display:none;">Prestige</button>
-      <button onclick="showTab('achievements')">Achievements</button>
-      <button onclick="showTab('settings')">Settings</button>
-      <button onclick="showTab('debuggo')">Debuggo</button>
+  <!-- Currency -->
+  <div id="currencyDisplay">Currency: 0</div>
+  <div id="pc-display">Prestige Points: 0</div>
+
+  <!-- Tabs -->
+  <div id="tabs">
+    <button onclick="showTab('main')">Main</button>
+    <button onclick="showTab('upgrades')">Upgrades</button>
+    <button onclick="showTab('prestige')">Prestige</button>
+    <button onclick="showTab('achievements')">Achievements</button>
+    <button onclick="showTab('stats')">Stats</button>
+    <button onclick="showTab('settings')">Settings</button>
+    <button onclick="showTab('debuggo')">Debuggo</button>
+  </div>
+
+  <!-- Tab Content -->
+  <div id="tab-content">
+    <div id="main" class="tab active">
+      <button onclick="gainCurrency()">Click me!</button>
+      <div id="producers"></div>
     </div>
 
-    <div id="tab-content">
-      <div id="main" class="tab"> 
-        <button onclick="gainCurrency()">Click me!</button>
-        <div id="producers"></div>
-      </div>
+    <div id="upgrades" class="tab">
+      <h3>Upgrades</h3>
+      <div id="upgrades-list"></div>
+    </div>
 
-      <div id="upgrades" class="tab" style="display:none;"></div>
-      <div id="prestige" class="tab" style="display:none;"></div>
-      <div id="achievements" class="tab" style="display:none;"></div>
-      <div id="settings" class="tab" style="display:none;"></div>
-      <div id="debuggo" class="tab" style="display:none;"></div>
+    <div id="prestige" class="tab">
+      <h3>Prestige</h3>
+      <button onclick="prestige()">Prestige Reset</button>
+      <p id="prestige-info"></p>
+    </div>
+
+    <div id="achievements" class="tab">
+      <h3>Achievements</h3>
+      <div id="achievements-list"></div>
+    </div>
+
+    <div id="stats" class="tab">
+      <h3>Stats</h3>
+      <p id="playtimeDisplay">Playtime: 0</p>
+      <p id="bestPrestige">Best Prestige Gain: 0</p>
+    </div>
+
+    <div id="settings" class="tab">
+      <h3>Settings</h3>
+      <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
+      <button onclick="hardReset()">Hard Reset</button><br>
+      <button onclick="saveGame()">Manual Save</button>
+      <button onclick="loadGame()">Load Save</button><br>
+      <button onclick="exportSave()">Export</button>
+      <button onclick="importSave()">Import</button>
+    </div>
+
+    <div id="debuggo" class="tab">
+      <h3>Debuggo</h3>
+      <button onclick="debugTriple()">Triple Currency</button>
+      <button onclick="toggleTickspeed()">Toggle 1ms Tick</button>
+      <p id="tickDisplay">Tickspeed: 1000ms</p>
     </div>
   </div>
 
+  <div id="notification"></div>
+
   <script src="js/script.js"></script>
 </body>
-  </html>
+      </html>
