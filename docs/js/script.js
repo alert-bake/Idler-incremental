@@ -1,4 +1,4 @@
-// ====== GAME STATE ======
+// ===== GAME STATE =====
 let game = {
   currency: 0,
   producers: [0, 0, 0], // Worker, Miner, Factory
@@ -9,68 +9,99 @@ let game = {
   darkMode: false
 };
 
-// ====== PRODUCER COSTS ======
-function producerCost(i) {
+// ===== COSTS =====
+function producerCost(i){
   return Math.floor(10 * Math.pow(1.15, game.producers[i]));
 }
 
-// ====== UI RENDERING ======
-function updateUI() {
-  document.getElementById("currencyDisplay").textContent = "Currency: " + format(game.currency);
-  document.getElementById("pc-display").textContent = "Prestige Points: " + format(game.prestige.points);
+// ===== RENDER =====
+function updateUI(){
+  // currency + prestige
+  const c = document.getElementById("currencyDisplay");
+  const p = document.getElementById("pcDisplay");
+  if(c) c.textContent = "Currency: " + format(game.currency);
+  if(p) p.textContent = "Prestige Points: " + format(game.prestige.points);
 
-  // Producers
-  let prodHTML = "";
-  game.producers.forEach((p, i) => {
-    prodHTML += `<div class="producer">
-      Producer #${i+1}: ${p}
-      <button onclick="buyProducer(${i})">Buy (${producerCost(i)})</button>
-    </div>`;
-  });
-  document.getElementById("producers").innerHTML = prodHTML;
+  // producers
+  const prodRoot = document.getElementById("producers");
+  if(prodRoot){
+    let html = "";
+    game.producers.forEach((count,i)=>{
+      html += `<div class="producer">
+        Producer #${i+1}: ${count}
+        <button onclick="buyProducer(${i})">Buy (${producerCost(i)})</button>
+      </div>`;
+    });
+    prodRoot.innerHTML = html;
+  }
 
-  // Upgrades
-  let upgHTML = `
-    <div class="upgrade">
-      <button onclick="buyDoubler()" ${game.upgrades.doubler >= 3 ? "disabled" : ""}>
-        Buy Doubler (${10 * (5 ** game.upgrades.doubler)})
-      </button>
-      <p>Owned: ${game.upgrades.doubler}</p>
-    </div>
-  `;
-  document.getElementById("upgrades-list").innerHTML = upgHTML;
+  // upgrades
+  const upgRoot = document.getElementById("upgradesList");
+  if(upgRoot){
+    upgRoot.innerHTML = `
+      <div class="upgrade">
+        <button onclick="buyDoubler()" ${game.upgrades.doubler >= 3 ? "disabled" : ""}>
+          Buy Doubler (${10 * (5 ** game.upgrades.doubler)})
+        </button>
+        <p>Owned: ${game.upgrades.doubler}</p>
+      </div>
+    `;
+  }
 
-  // Prestige
-  document.getElementById("prestige-info").textContent =
-    `Best Gain: ${game.prestige.bestGain}`;
+  // prestige info
+  const pi = document.getElementById("prestigeInfo");
+  if(pi) pi.textContent = `Best Gain: ${format(game.prestige.bestGain)}`;
 
-  // Stats
-  document.getElementById("playtimeDisplay").textContent = "Playtime: " + formatTime(game.playtime);
-  document.getElementById("bestPrestige").textContent = "Best Prestige Gain: " + format(game.prestige.bestGain);
+  // stats
+  const pt = document.getElementById("playtimeDisplay");
+  const bp = document.getElementById("bestPrestige");
+  if(pt) pt.textContent = "Playtime: " + formatTime(game.playtime);
+  if(bp) bp.textContent = "Best Prestige Gain: " + format(game.prestige.bestGain);
 
-  // Debug
-  document.getElementById("tickDisplay").textContent = "Tickspeed: " + tickRate + "ms";
+  // debug
+  const td = document.getElementById("tickDisplay");
+  if(td) td.textContent = "Tickspeed: " + tickRate + "ms";
 }
 
-// ====== TAB SWITCHING ======
-function showTab(id) {
-  document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+// ===== TABS =====
+function showTab(id){
+  // switch content
+  document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
+  const tab = document.getElementById(id);
+  if(tab) tab.classList.add('active');
 
-  // Reset subtabs if tab has any
-  let firstSub = document.querySelector(`#${id} .subtab-btn`);
-  if (firstSub) {
-    firstSub.click(); // auto-open first subtab
+  // highlight tab button
+  document.querySelectorAll('#tabs button').forEach(btn=>{
+    const on = btn.getAttribute('onclick') || "";
+    btn.classList.toggle('active', on.includes(`'${id}'`));
+  });
+
+  // if the tab has subtabs, ensure the first is active
+  if(id === "settingsTab"){
+    const firstBtn = document.querySelector('#settingsSubtabs .subtab-btn');
+    if(firstBtn && !firstBtn.classList.contains('active')){
+      firstBtn.click();
+    }
   }
 }
 
-function showSubtab(parent, id) {
-  document.querySelectorAll(`#${parent} .subtab`).forEach(st => st.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+function showSubtab(subtabId, btn){
+  const container = document.getElementById("settingsTab");
+  if(!container) return;
+
+  container.querySelectorAll('.subtab').forEach(s=>s.classList.remove('active'));
+  const target = document.getElementById(subtabId);
+  if(target) target.classList.add('active');
+
+  const bar = document.getElementById('settingsSubtabs');
+  if(bar){
+    bar.querySelectorAll('.subtab-btn').forEach(b=>b.classList.remove('active'));
+    if(btn) btn.classList.add('active');
+  }
 }
 
-// ====== GAME LOGIC ======
-function gainCurrency() {
+// ===== GAME LOGIC =====
+function gainCurrency(){
   let gain = 1 * (2 ** game.upgrades.doubler);
   if (game.modifiers.buffs.includes("Stabilized")) gain *= 1.3;
   if (game.modifiers.debuffs.includes("Destabilizer")) gain = Math.pow(gain, 0.7);
@@ -78,33 +109,32 @@ function gainCurrency() {
   updateUI();
 }
 
-function buyProducer(i) {
-  let cost = producerCost(i);
-  if (game.currency >= cost) {
+function buyProducer(i){
+  const cost = producerCost(i);
+  if (game.currency >= cost){
     game.currency -= cost;
     game.producers[i]++;
     updateUI();
   }
 }
 
-function buyDoubler() {
-  let cost = 10 * (5 ** game.upgrades.doubler);
-  if (game.currency >= cost && game.upgrades.doubler < 3) {
+function buyDoubler(){
+  const cost = 10 * (5 ** game.upgrades.doubler);
+  if (game.currency >= cost && game.upgrades.doubler < 3){
     game.currency -= cost;
     game.upgrades.doubler++;
     updateUI();
   }
 }
 
-function prestige() {
-  if (game.currency >= 200000) {
+function prestige(){
+  if (game.currency >= 200000){
     let base = Math.pow(game.currency / 4, 0.9);
     if (game.upgrades.formulaBoost) base = Math.pow(game.currency / 4, 0.9) / 1.5 / 1.5;
-    let gain = Math.floor(base / 4);
-
-    if (gain > 0) {
+    const gain = Math.floor(base / 4);
+    if (gain > 0){
       game.currency = 0;
-      game.producers = [0, 0, 0];
+      game.producers = [0,0,0];
       game.upgrades.doubler = 0;
       game.prestige.points += gain;
       game.prestige.bestGain = Math.max(game.prestige.bestGain, gain);
@@ -113,47 +143,80 @@ function prestige() {
   }
 }
 
-// ====== DEBUG ======
-function debugTriple() { game.currency *= 3; updateUI(); }
+// ===== DEBUG =====
+function debugTriple(){ game.currency *= 3; updateUI(); }
 let tickRate = 1000;
-function toggleTickspeed() { tickRate = tickRate === 1000 ? 1 : 1000; }
+function toggleTickspeed(){ tickRate = (tickRate === 1000 ? 1 : 1000); }
 
-// ====== SAVE/LOAD ======
-function saveGame() { localStorage.setItem("idlerIncrementalSave", JSON.stringify(game)); }
-function loadGame() {
+// ===== SAVE/LOAD =====
+function saveGame(){ localStorage.setItem("idlerIncrementalSave", JSON.stringify(game)); }
+function loadGame(){
   let save = localStorage.getItem("idlerIncrementalSave");
-  if (save) { game = JSON.parse(save); updateUI(); }
+  if (save){
+    try{
+      const data = JSON.parse(save);
+      if (data && typeof data === "object") game = {...game, ...data};
+    }catch{}
+  }
+  updateUI();
 }
-function exportSave() {
+function exportSave(){
   navigator.clipboard.writeText(btoa(JSON.stringify(game)));
   alert("Save copied!");
 }
-function importSave() {
+function importSave(){
   let data = prompt("Paste save:");
-  try { game = JSON.parse(atob(data)); updateUI(); saveGame(); }
-  catch { alert("Invalid save"); }
+  try{
+    game = JSON.parse(atob(data));
+    updateUI(); saveGame();
+  }catch{ alert("Invalid save"); }
 }
-function hardReset() { if(confirm("Reset?")) { localStorage.clear(); location.reload(); } }
+function hardReset(){
+  if(confirm("Reset?")){
+    localStorage.clear();
+    location.reload();
+  }
+}
 
-// ====== HELPERS ======
-function format(n) {
-  if (n >= 1e6) return n.toExponential(2);
-  return n.toLocaleString("en-US");
-}
-function formatTime(sec) {
-  let m = Math.floor(sec/60), s = sec%60;
+// ===== HELPERS =====
+function format(n){ return (n >= 1e6) ? n.toExponential(2) : n.toLocaleString("en-US"); }
+function formatTime(sec){
+  sec = Math.floor(sec);
+  const m = Math.floor(sec/60), s = sec%60;
   return `${m}m ${s}s`;
 }
 
-// ====== MAIN LOOP ======
-function tick() {
+// ===== LOOP =====
+function tick(){
   game.playtime++;
-  for (let i=0;i<game.producers.length;i++) {
+  for (let i=0;i<game.producers.length;i++){
     game.currency += game.producers[i];
   }
   updateUI();
   setTimeout(tick, tickRate);
 }
 
-// ====== INIT ======
+// ===== INIT =====
 window.onload = () => { loadGame(); updateUI(); tick(); };
+
+// ===== GLOBAL EXPORTS (for inline onclick) =====
+window.showTab = showTab;
+window.showSubtab = showSubtab;
+window.gainCurrency = gainCurrency;
+window.buyProducer = buyProducer;
+window.buyDoubler = buyDoubler;
+window.prestige = prestige;
+window.debugTriple = debugTriple;
+window.toggleTickspeed = toggleTickspeed;
+window.toggleDarkMode = toggleDarkMode;
+window.saveGame = saveGame;
+window.loadGame = loadGame;
+window.exportSave = exportSave;
+window.importSave = importSave;
+window.hardReset = hardReset;
+
+// ===== THEME TOGGLE =====
+function toggleDarkMode(){
+  game.darkMode = !game.darkMode;
+  document.body.classList.toggle("darkmode", game.darkMode);
+}
