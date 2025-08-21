@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Idler Incremental v1.0</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app">
+    <h1>Idler Incremental</h1>
+    <div id="currency-display">Currency: 0</div>
+    <div id="pc-display" style="display:none;">Prestigious Currency: 0</div>
+
+    <div id="tabs">
+      <button onclick="showTab('main')">Main</button>
+      <button onclick="showTab('upgrades')">Upgrades</button>
+      <button onclick="showTab('prestige')" id="prestige-tab" style="display:none;">Prestige</button>
+      <button onclick="showTab('achievements')">Achievements</button>
+      <button onclick="showTab('settings')">Settings</button>
+      <button onclick="showTab('debuggo')">Debuggo</button>
+    </div>
+
+    <div id="tab-content">
+      <div id="main" class="tab"> 
+        <button onclick="gainCurrency()">Click me!</button>
+        <div id="producers"></div>
+      </div>
+
+      <div id="upgrades" class="tab" style="display:none;"></div>
+      <div id="prestige" class="tab" style="display:none;"></div>
+      <div id="achievements" class="tab" style="display:none;"></div>
+      <div id="settings" class="tab" style="display:none;"></div>
+      <div id="debuggo" class="tab" style="display:none;"></div>
+    </div>
+  </div>
+
+  <script src="js/script.js"></script>
+</body>
+  </html>
