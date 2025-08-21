@@ -1,136 +1,129 @@
-/* ====== GENERAL ====== */
+/* ===== General ===== */
 body {
   font-family: Arial, sans-serif;
-  background: #1a1a1a;
-  color: #f0f0f0;
+  background: #111;
+  color: #eee;
   margin: 0;
   padding: 0;
   text-align: center;
 }
 
-/* ====== TOP BAR ====== */
-.topbar {
-  background: #111;
-  color: #fff;
-  padding: 10px;
-  display: flex;
-  justify-content: space-around;
-  border-bottom: 2px solid #333;
+/* ===== Top Bar ===== */
+#topBar {
+  background: #000;
+  color: #0ff;
+  padding: 12px;
+  font-size: 18px;
+  font-weight: bold;
+  border-bottom: 2px solid #0ff;
 }
 
-.topbar button {
-  background: #333;
-  border: none;
-  color: #fff;
-  padding: 8px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background 0.2s;
+/* ===== Currency Display ===== */
+#currencyDisplay, #pc-display {
+  margin: 12px 0;
+  font-size: 18px;
+  color: #0ff;
 }
 
-.topbar button:hover {
-  background: #444;
+/* ===== Tabs ===== */
+#tabs {
+  margin: 12px 0;
 }
-
-/* ====== CONTENT AREA ====== */
-#currencyDisplay, #pcDisplay {
-  font-size: 20px;
-  margin: 15px 0;
-}
-
-#game {
-  padding: 20px;
-}
-
-/* ====== PRODUCERS ====== */
-.producer {
-  background: #262626;
-  margin: 10px auto;
-  padding: 10px;
-  border-radius: 8px;
-  width: 260px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.4);
-}
-
-.producer button {
-  margin-left: 10px;
-  background: #444;
-  border: none;
-  color: #fff;
-  padding: 5px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.producer button:hover {
-  background: #555;
-}
-
-/* ====== UPGRADES ====== */
-.upgrade {
-  background: #262626;
-  margin: 10px auto;
-  padding: 10px;
-  border-radius: 8px;
-  width: 280px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.4);
-}
-
-.upgrade button {
-  background: #444;
-  border: none;
-  color: #fff;
-  padding: 5px 15px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.upgrade button:disabled {
+#tabs button {
   background: #222;
-  color: #777;
-  cursor: not-allowed;
+  color: #eee;
+  border: none;
+  border-radius: 10px; /* squaircle */
+  padding: 10px 14px;
+  margin: 4px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+#tabs button:hover {
+  background: #333;
+  transform: scale(1.05);
+}
+#tabs button.active {
+  background: #0ff;
+  color: #000;
 }
 
-/* ====== TABS ====== */
+/* ===== Tab Content ===== */
 .tab {
   display: none;
-  padding: 15px;
+  padding: 12px;
 }
-
 .tab.active {
   display: block;
 }
 
-/* ====== DEBUG PANEL ====== */
-.debug {
-  background: #1f1f1f;
-  padding: 12px;
-  margin: 15px auto;
-  width: 280px;
-  border-radius: 6px;
-  border: 1px solid #333;
-}
-
-.debug button {
-  background: #900;
+/* ===== Subtabs ===== */
+.subtab-btn {
+  background: #333;
+  color: #eee;
   border: none;
-  color: #fff;
-  padding: 6px 12px;
-  margin-top: 8px;
-  border-radius: 4px;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin: 3px;
   cursor: pointer;
 }
-
-.debug button:hover {
-  background: #c00;
+.subtab-btn:hover {
+  background: #444;
+}
+.subtab-btn.active {
+  background: #0f0;
+  color: #000;
+}
+.subtab {
+  display: none;
+  margin-top: 12px;
+}
+.subtab.active {
+  display: block;
 }
 
-/* ====== STATS ====== */
-#stats {
-  text-align: left;
-  margin: 0 auto;
-  width: 280px;
-  background: #262626;
-  padding: 10px;
+/* ===== Buttons General ===== */
+button {
+  background: #222;
+  color: #eee;
+  border: none;
+  border-radius: 10px; /* smooth squaircle */
+  padding: 10px 14px;
+  margin: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s, transform 0.1s;
+}
+button:hover {
+  background: #333;
+  transform: scale(1.05);
+}
+button:disabled {
+  background: #555;
+  color: #999;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ===== Producers / Upgrades ===== */
+.producer, .upgrade {
+  margin: 10px;
+  padding: 8px;
+  border: 1px solid #444;
+  border-radius: 10px;
+  background: #181818;
+}
+
+/* ===== Notification ===== */
+#notification {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #0ff;
+  color: #000;
+  padding: 8px 16px;
   border-radius: 8px;
-   }
+  display: none;
+  font-weight: bold;
+    }
