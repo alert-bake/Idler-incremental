@@ -19,7 +19,7 @@ function producerCost(i) {
 function updateUI() {
   // Currency
   document.getElementById("currencyDisplay").textContent = "Currency: " + format(game.currency);
-  document.getElementById("pc-display").textContent = "Prestige Points: " + format(game.prestige.points);
+  document.getElementById("pcDisplay").textContent = "Prestige Points: " + format(game.prestige.points);
 
   // Producers
   let prodHTML = "";
