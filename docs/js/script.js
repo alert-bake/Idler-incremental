@@ -1,7 +1,7 @@
 // ====== GAME STATE ======
 let game = {
   currency: 0,
-  producers: [0, 0, 0], // Worker, Miner, Factory (expand later)
+  producers: [0, 0, 0], // Worker, Miner, Factory
   upgrades: { doubler: 0, formulaBoost: false },
   prestige: { points: 0, bestGain: 0 },
   modifiers: { active: false, buffs: [], debuffs: [] },
@@ -55,6 +55,17 @@ function updateUI() {
 // ====== TAB SWITCHING ======
 function showTab(id) {
   document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+
+  // Reset subtabs if tab has any
+  let firstSub = document.querySelector(`#${id} .subtab-btn`);
+  if (firstSub) {
+    firstSub.click(); // auto-open first subtab
+  }
+}
+
+function showSubtab(parent, id) {
+  document.querySelectorAll(`#${parent} .subtab`).forEach(st => st.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
 
@@ -146,28 +157,3 @@ function tick() {
 
 // ====== INIT ======
 window.onload = () => { loadGame(); updateUI(); tick(); };
-
-// ✅ EXPOSE FUNCTIONS TO GLOBAL
-window.showTab = showTab;
-window.gainCurrency = gainCurrency;
-window.buyProducer = buyProducer;
-window.buyDoubler = buyDoubler;
-window.prestige = prestige;
-window.debugTriple = debugTriple;
-window.toggleTickspeed = toggleTickspeed;
-window.toggleDarkMode = toggleDarkMode;
-window.saveGame = saveGame;
-window.loadGame = loadGame;
-window.exportSave = exportSave;
-window.importSave = importSave;
-window.hardReset = hardReset;
-
-// ====== DARK MODE ======
-function toggleDarkMode() {
-  game.darkMode = !game.darkMode;
-  if (game.darkMode) {
-    document.body.classList.add("darkmode");
-  } else {
-    document.body.classList.remove("darkmode");
-  }
-}
