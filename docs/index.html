@@ -3,83 +3,83 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Idler Incremental v1.1</title>
+  <title>Idler Incremental</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <!-- Top Bar -->
-  <div class="topbar">
-    <span>Idler Incremental v1.1</span>
-    <button onclick="showTab('main')">Main</button>
-    <button onclick="showTab('upgrades')">Upgrades</button>
-    <button onclick="showTab('prestige')">Prestige</button>
-    <button onclick="showTab('achievements')">Achievements</button>
-    <button onclick="showTab('stats')">Stats</button>
-    <button onclick="showTab('settings')">Settings</button>
-    <button onclick="showTab('debuggo')">Debuggo</button>
+  <!-- ===== TOP BAR ===== -->
+  <div id="topBar">💠 Idler Incremental 💠</div>
+
+  <!-- ===== Currency Display ===== -->
+  <div id="currencyDisplay">Currency: 0</div>
+  <div id="pc-display">Prestige Points: 0</div>
+
+  <!-- ===== Tabs ===== -->
+  <div id="tabs">
+    <button onclick="showTab('producers-tab')" class="active">Producers</button>
+    <button onclick="showTab('upgrades-tab')">Upgrades</button>
+    <button onclick="showTab('prestige-tab')">Prestige</button>
+    <button onclick="showTab('stats-tab')">Stats</button>
+    <button onclick="showTab('settings-tab')">Settings</button>
   </div>
 
-  <!-- Currency -->
-  <div id="currencyDisplay">Currency: 0</div>
-  <div id="pcDisplay">Prestige Points: 0</div>
+  <!-- ===== Producers ===== -->
+  <div id="producers-tab" class="tab active">
+    <h2>Producers</h2>
+    <div id="producers"></div>
+  </div>
 
-  <!-- Tab Content -->
-  <div id="game">
-    <!-- Main -->
-    <div id="main" class="tab active">
-      <button onclick="gainCurrency()">Click me!</button>
-      <div id="producers"></div>
+  <!-- ===== Upgrades ===== -->
+  <div id="upgrades-tab" class="tab">
+    <h2>Upgrades</h2>
+    <div id="upgrades-list"></div>
+  </div>
+
+  <!-- ===== Prestige ===== -->
+  <div id="prestige-tab" class="tab">
+    <h2>Prestige</h2>
+    <p id="prestige-info">Best Gain: 0</p>
+    <button onclick="prestige()">Prestige Reset</button>
+  </div>
+
+  <!-- ===== Stats ===== -->
+  <div id="stats-tab" class="tab">
+    <h2>Stats</h2>
+    <p id="playtimeDisplay">Playtime: 0s</p>
+    <p id="bestPrestige">Best Prestige Gain: 0</p>
+  </div>
+
+  <!-- ===== Settings ===== -->
+  <div id="settings-tab" class="tab">
+    <h2>Settings</h2>
+
+    <!-- Subtab Buttons -->
+    <div id="settings-subtabs">
+      <button class="subtab-btn active" onclick="showSubtab('general-subtab', this)">General</button>
+      <button class="subtab-btn" onclick="showSubtab('debuggo-subtab', this)">Debuggo</button>
     </div>
 
-    <!-- Upgrades -->
-    <div id="upgrades" class="tab">
-      <h3>Upgrades</h3>
-      <div id="upgrades-list"></div>
+    <!-- Subtab: General -->
+    <div id="general-subtab" class="subtab active">
+      <button onclick="saveGame()">Save Game</button>
+      <button onclick="exportSave()">Export Save</button>
+      <button onclick="importSave()">Import Save</button>
+      <button onclick="hardReset()">Hard Reset</button>
     </div>
 
-    <!-- Prestige -->
-    <div id="prestige" class="tab">
-      <h3>Prestige</h3>
-      <button onclick="prestige()">Prestige Reset</button>
-      <p id="prestige-info"></p>
-    </div>
-
-    <!-- Achievements -->
-    <div id="achievements" class="tab">
-      <h3>Achievements</h3>
-      <div id="achievements-list"></div>
-    </div>
-
-    <!-- Stats -->
-    <div id="stats" class="tab">
-      <h3>Stats</h3>
-      <p id="playtimeDisplay">Playtime: 0</p>
-      <p id="bestPrestige">Best Prestige Gain: 0</p>
-    </div>
-
-    <!-- Settings -->
-    <div id="settings" class="tab">
-      <h3>Settings</h3>
-      <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
-      <button onclick="hardReset()">Hard Reset</button><br>
-      <button onclick="saveGame()">Manual Save</button>
-      <button onclick="loadGame()">Load Save</button><br>
-      <button onclick="exportSave()">Export</button>
-      <button onclick="importSave()">Import</button>
-    </div>
-
-    <!-- Debug -->
-    <div id="debuggo" class="tab debug">
-      <h3>Debuggo</h3>
+    <!-- Subtab: Debuggo -->
+    <div id="debuggo-subtab" class="subtab">
+      <h3>Debug Tools</h3>
       <button onclick="debugTriple()">Triple Currency</button>
-      <button onclick="toggleTickspeed()">Toggle 1ms Tick</button>
+      <button onclick="toggleTickspeed()">Toggle Tickspeed</button>
       <p id="tickDisplay">Tickspeed: 1000ms</p>
     </div>
   </div>
 
-  <!-- Notifications -->
+  <!-- ===== Notification ===== -->
   <div id="notification"></div>
 
+  <!-- ===== Script ===== -->
   <script src="js/script.js"></script>
 </body>
-</html>
+  </html>
