@@ -1,129 +1,152 @@
-/* ===== General ===== */
-body {
+/* ===== Base ===== */
+:root{
+  --bg: #111;
+  --fg: #eee;
+  --card: #181818;
+  --border: #333;
+  --accent: #00e6ff;
+  --accent-2: #0f0;
+  --btn: #222;
+  --btn-hover: #333;
+  --btn-disabled: #555;
+}
+
+*{ box-sizing: border-box; }
+
+body{
   font-family: Arial, sans-serif;
-  background: #111;
-  color: #eee;
+  background: var(--bg);
+  color: var(--fg);
   margin: 0;
-  padding: 0;
   text-align: center;
 }
 
+/* Light toggle (optional) */
+body.darkmode{
+  --bg:#f5f5f5;
+  --fg:#222;
+  --card:#ffffff;
+  --border:#ccc;
+  --btn:#ddd;
+  --btn-hover:#cfcfcf;
+  --btn-disabled:#bbb;
+  --accent:#006d77;
+  --accent-2:#2a9d8f;
+}
+
 /* ===== Top Bar ===== */
-#topBar {
-  background: #000;
-  color: #0ff;
-  padding: 12px;
-  font-size: 18px;
-  font-weight: bold;
-  border-bottom: 2px solid #0ff;
+#topBar{
+  background:#000;
+  color:var(--accent);
+  padding:12px 10px;
+  font-size:18px;
+  font-weight:700;
+  border-bottom:2px solid var(--accent);
 }
 
-/* ===== Currency Display ===== */
-#currencyDisplay, #pc-display {
-  margin: 12px 0;
-  font-size: 18px;
-  color: #0ff;
+/* ===== Currency ===== */
+#currencyDisplay,#pcDisplay{
+  margin:10px 0 4px;
+  font-size:18px;
+  color:var(--accent);
 }
 
-/* ===== Tabs ===== */
-#tabs {
-  margin: 12px 0;
-}
-#tabs button {
-  background: #222;
-  color: #eee;
-  border: none;
-  border-radius: 10px; /* squaircle */
-  padding: 10px 14px;
-  margin: 4px;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
-}
-#tabs button:hover {
-  background: #333;
-  transform: scale(1.05);
-}
-#tabs button.active {
-  background: #0ff;
-  color: #000;
+/* ===== Tabs (responsive) ===== */
+#tabs{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  justify-content:center;
+  padding:10px;
 }
 
-/* ===== Tab Content ===== */
-.tab {
-  display: none;
-  padding: 12px;
+#tabs button{
+  -webkit-appearance:none;
+  appearance:none;
+  background:var(--btn);
+  color:var(--fg);
+  border:none;
+  border-radius:12px; /* squaircle */
+  padding: clamp(8px, 1.2vw, 12px) clamp(10px, 1.8vw, 16px);
+  font-size: clamp(12px, 2.5vw, 16px);
+  cursor:pointer;
+  transition: background .15s, transform .08s;
 }
-.tab.active {
-  display: block;
-}
+#tabs button:hover{ background:var(--btn-hover); transform:scale(1.04); }
+#tabs button.active{ background:var(--accent); color:#000; }
+
+/* ===== Content Tabs ===== */
+.tab{ display:none; padding:12px; }
+.tab.active{ display:block; }
 
 /* ===== Subtabs ===== */
-.subtab-btn {
-  background: #333;
-  color: #eee;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 12px;
-  margin: 3px;
-  cursor: pointer;
+.subtabs{ display:flex; gap:6px; justify-content:center; margin:10px 0; }
+.subtab-btn{
+  -webkit-appearance:none;
+  appearance:none;
+  background:#2a2a2a;
+  color:var(--fg);
+  border:none;
+  border-radius:10px;
+  padding:8px 12px;
+  cursor:pointer;
+  transition: background .15s, transform .08s;
+  font-size:14px;
 }
-.subtab-btn:hover {
-  background: #444;
-}
-.subtab-btn.active {
-  background: #0f0;
-  color: #000;
-}
-.subtab {
-  display: none;
-  margin-top: 12px;
-}
-.subtab.active {
-  display: block;
-}
+.subtab-btn:hover{ background:#3a3a3a; transform:scale(1.03); }
+.subtab-btn.active{ background:var(--accent-2); color:#000; }
 
-/* ===== Buttons General ===== */
-button {
-  background: #222;
-  color: #eee;
-  border: none;
-  border-radius: 10px; /* smooth squaircle */
-  padding: 10px 14px;
-  margin: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background 0.2s, transform 0.1s;
-}
-button:hover {
-  background: #333;
-  transform: scale(1.05);
-}
-button:disabled {
-  background: #555;
-  color: #999;
-  cursor: not-allowed;
-  transform: none;
-}
+.subtab{ display:none; }
+.subtab.active{ display:block; }
 
-/* ===== Producers / Upgrades ===== */
-.producer, .upgrade {
-  margin: 10px;
-  padding: 8px;
-  border: 1px solid #444;
-  border-radius: 10px;
-  background: #181818;
+/* ===== Buttons (global) ===== */
+button{
+  -webkit-appearance:none !important;
+  appearance:none !important;
+  background:var(--btn);
+  color:var(--fg);
+  border:none;
+  border-radius:12px; /* squaircle */
+  padding:10px 14px;
+  margin:4px;
+  cursor:pointer;
+  font-size:14px;
+  transition: background .15s, transform .08s;
 }
+button:hover{ background:var(--btn-hover); transform:scale(1.03); }
+button:disabled{ background:var(--btn-disabled); color:#999; cursor:not-allowed; transform:none; }
+button.primary{ background:var(--accent); color:#000; }
+button.primary:hover{ filter:brightness(.95); transform:scale(1.02); }
+
+/* ===== Cards ===== */
+.producer,.upgrade,#prestigeTab,#statsTab,#settingsTab{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:10px;
+  margin:10px auto;
+  max-width:480px;
+  box-shadow:0 2px 6px rgba(0,0,0,.3);
+  text-align:left;
+}
+.producer,.upgrade{ text-align:center; }
 
 /* ===== Notification ===== */
-#notification {
-  position: fixed;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #0ff;
-  color: #000;
-  padding: 8px 16px;
-  border-radius: 8px;
-  display: none;
-  font-weight: bold;
-    }
+#notification{
+  position:fixed;
+  bottom:12px;
+  left:50%;
+  transform:translateX(-50%);
+  background:var(--accent);
+  color:#000;
+  padding:8px 16px;
+  border-radius:10px;
+  font-weight:700;
+  display:none;
+  z-index:9999;
+}
+
+/* Small screens tweak */
+@media (max-width:420px){
+  .producer,.upgrade,#prestigeTab,#statsTab,#settingsTab{ margin:8px 12px; }
+  }
