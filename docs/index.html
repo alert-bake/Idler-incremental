@@ -1,66 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Idler Incremental v1.3</title>
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <title>Idler Incremental v1.3</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <h1>Idler Incremental v1.3 "Liquidated Requiem"</h1>
+  <h1>Idler Incremental</h1>
 
-    <!-- Currency Row -->
-    <div id="currencyRow">
-        <div id="currency">Currency: 0</div>
-        <div id="prestigeCurrency">Prestigious Currency: 0</div>
-        <button onclick="doPrestige()">Prestige!</button>
-        <div id="prestigeVisualizer">Prestige Multi: x1</div>
-    </div>
+  <!-- Currency Row -->
+  <div id="currencyRow">
+    <div id="currency">Currency: 0</div>
+    <button onclick="gainCurrency()">Gain Currency</button>
+  </div>
 
-    <!-- Tabs -->
-    <div id="tabs">
-        <button onclick="showTab('producersTab')">Producers</button>
-        <button onclick="showTab('statsTab')">Stats</button>
-        <button onclick="showTab('achievementsTab')">Achievements</button>
-        <button onclick="showTab('debugTab')">Debuggo</button>
-    </div>
+  <!-- Tabs -->
+  <div id="tabs">
+    <button onclick="showTab('producersTab')">Producers</button>
+    <button onclick="showTab('prestigeTab')">Prestige</button>
+    <button onclick="showTab('achievementsTab')">Achievements</button>
+    <button onclick="showTab('statsTab')">Stats</button>
+    <button onclick="showTab('debugTab')">Debuggo</button>
+  </div>
 
-    <!-- Tab Contents -->
-    <div id="tabContents">
-        <div id="producersTab" class="tab active">
-            <h2>Producers</h2>
-            <div id="producers"></div>
-        </div>
+  <!-- Tab Contents -->
+  <div id="producersTab" class="tab-content active">
+    <h2>Producers</h2>
+    <div id="producers"></div>
+  </div>
 
-        <div id="statsTab" class="tab hidden">
-            <h2>Stats</h2>
-            <div id="stats"></div>
-        </div>
+  <div id="prestigeTab" class="tab-content">
+    <h2>Prestige</h2>
+    <div id="prestigeInfo"></div>
+    <button onclick="prestige()">Prestige</button>
+    <div id="prestigeUpgrades"></div>
+  </div>
 
-        <div id="achievementsTab" class="tab hidden">
-            <h2>Achievements</h2>
-            <div id="achievements"></div>
-        </div>
+  <div id="achievementsTab" class="tab-content">
+    <h2>Achievements</h2>
+    <div id="achievements"></div>
+  </div>
 
-        <div id="debugTab" class="tab hidden">
-            <h2>Debuggo</h2>
-            <button onclick="game.settings.tickspeed = (game.settings.tickspeed === 1 ? 1000 : 1)">
-                Toggle 1000x Tickspeed
-            </button>
-            <button onclick="doOfflineProgress()">Simulate Offline Progress</button>
-        </div>
-    </div>
+  <div id="statsTab" class="tab-content">
+    <h2>Stats</h2>
+    <div id="stats"></div>
+  </div>
 
-    <!-- Scripts -->
-    <script src="js/logic.js"></script>
-    <script src="js/formula.js"></script>
-    <script src="js/tickspeed.js"></script>
-    <script src="js/render.js"></script>
-    <script>
-        function showTab(tabId) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.add("hidden"));
-            document.getElementById(tabId).classList.remove("hidden");
-        }
-        render();
-    </script>
+  <div id="debugTab" class="tab-content">
+    <h2>Debuggo</h2>
+    <button onclick="toggleFastMode()">Toggle Tickspeed Cheat</button>
+    <div id="debugStats"></div>
+  </div>
+
+  <!-- Notifications -->
+  <div id="notification"></div>
+
+  <!-- Scripts -->
+  <script src="js/formula.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/tickspeed.js"></script>
+  <script src="js/logic.js"></script>
 </body>
-  </html>
+      </html>
