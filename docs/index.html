@@ -7,14 +7,9 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <div id="topBar">Idler Incremental v1.1</div>
-
-  <!-- Currency -->
-  <div id="currencyDisplay">Currency: 0</div>
-  <div id="pc-display">Prestige Points: 0</div>
-
-  <!-- Tabs -->
-  <div id="tabs">
+  <!-- Top Bar -->
+  <div class="topbar">
+    <span>Idler Incremental v1.1</span>
     <button onclick="showTab('main')">Main</button>
     <button onclick="showTab('upgrades')">Upgrades</button>
     <button onclick="showTab('prestige')">Prestige</button>
@@ -24,35 +19,45 @@
     <button onclick="showTab('debuggo')">Debuggo</button>
   </div>
 
+  <!-- Currency -->
+  <div id="currencyDisplay">Currency: 0</div>
+  <div id="pcDisplay">Prestige Points: 0</div>
+
   <!-- Tab Content -->
-  <div id="tab-content">
+  <div id="game">
+    <!-- Main -->
     <div id="main" class="tab active">
       <button onclick="gainCurrency()">Click me!</button>
       <div id="producers"></div>
     </div>
 
+    <!-- Upgrades -->
     <div id="upgrades" class="tab">
       <h3>Upgrades</h3>
       <div id="upgrades-list"></div>
     </div>
 
+    <!-- Prestige -->
     <div id="prestige" class="tab">
       <h3>Prestige</h3>
       <button onclick="prestige()">Prestige Reset</button>
       <p id="prestige-info"></p>
     </div>
 
+    <!-- Achievements -->
     <div id="achievements" class="tab">
       <h3>Achievements</h3>
       <div id="achievements-list"></div>
     </div>
 
+    <!-- Stats -->
     <div id="stats" class="tab">
       <h3>Stats</h3>
       <p id="playtimeDisplay">Playtime: 0</p>
       <p id="bestPrestige">Best Prestige Gain: 0</p>
     </div>
 
+    <!-- Settings -->
     <div id="settings" class="tab">
       <h3>Settings</h3>
       <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
@@ -63,7 +68,8 @@
       <button onclick="importSave()">Import</button>
     </div>
 
-    <div id="debuggo" class="tab">
+    <!-- Debug -->
+    <div id="debuggo" class="tab debug">
       <h3>Debuggo</h3>
       <button onclick="debugTriple()">Triple Currency</button>
       <button onclick="toggleTickspeed()">Toggle 1ms Tick</button>
@@ -71,8 +77,9 @@
     </div>
   </div>
 
+  <!-- Notifications -->
   <div id="notification"></div>
 
   <script src="js/script.js"></script>
 </body>
-      </html>
+</html>
