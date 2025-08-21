@@ -11,15 +11,13 @@ let game = {
 
 // ====== PRODUCER COSTS ======
 function producerCost(i) {
-  // Scales up 15% per purchase
   return Math.floor(10 * Math.pow(1.15, game.producers[i]));
 }
 
 // ====== UI RENDERING ======
 function updateUI() {
-  // Currency
   document.getElementById("currencyDisplay").textContent = "Currency: " + format(game.currency);
-  document.getElementById("pcDisplay").textContent = "Prestige Points: " + format(game.prestige.points);
+  document.getElementById("pc-display").textContent = "Prestige Points: " + format(game.prestige.points);
 
   // Producers
   let prodHTML = "";
@@ -42,7 +40,7 @@ function updateUI() {
   `;
   document.getElementById("upgrades-list").innerHTML = upgHTML;
 
-  // Prestige info
+  // Prestige
   document.getElementById("prestige-info").textContent =
     `Best Gain: ${game.prestige.bestGain}`;
 
@@ -148,3 +146,28 @@ function tick() {
 
 // ====== INIT ======
 window.onload = () => { loadGame(); updateUI(); tick(); };
+
+// ✅ EXPOSE FUNCTIONS TO GLOBAL
+window.showTab = showTab;
+window.gainCurrency = gainCurrency;
+window.buyProducer = buyProducer;
+window.buyDoubler = buyDoubler;
+window.prestige = prestige;
+window.debugTriple = debugTriple;
+window.toggleTickspeed = toggleTickspeed;
+window.toggleDarkMode = toggleDarkMode;
+window.saveGame = saveGame;
+window.loadGame = loadGame;
+window.exportSave = exportSave;
+window.importSave = importSave;
+window.hardReset = hardReset;
+
+// ====== DARK MODE ======
+function toggleDarkMode() {
+  game.darkMode = !game.darkMode;
+  if (game.darkMode) {
+    document.body.classList.add("darkmode");
+  } else {
+    document.body.classList.remove("darkmode");
+  }
+}
